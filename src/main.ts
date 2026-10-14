@@ -1,13 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { existsSync } from 'node:fs';
-import { AppModule, ObserveInstrument } from './app.module.js';
+import { AppModule } from './app.module.js';
 
 if (existsSync('.env')) process.loadEnvFile();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    instrument: ObserveInstrument,
-  });
+  const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
 
