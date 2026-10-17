@@ -1,45 +1,46 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateTicketDto } from './dto/create-ticket.dto.js';
 import { Ticket } from './ticket.interface.js';
+import { TICKETS } from './tickets.data.js';
 
 @Injectable()
 export class TicketsService {
-  private readonly tickets: Ticket[] = [
-    {
-      id: 1,
-      subject: 'Cannot login to account',
-      description: 'User cannot access the dashboard after login',
-      priority: 'high',
-      status: 'open',
-      createdAt: '2026-09-01T10:00:00.000Z',
-    },
-    {
-      id: 2,
-      subject: 'Invoice PDF not downloading',
-      description:
-        'Clicking the download button on the billing page does nothing',
-      priority: 'medium',
-      status: 'open',
-      createdAt: '2026-09-02T14:30:00.000Z',
-    },
-    {
-      id: 3,
-      subject: 'Typo on pricing page',
-      description:
-        'The word "monthly" is misspelled in the pricing table header',
-      priority: 'low',
-      status: 'closed',
-      createdAt: '2026-09-03T09:15:00.000Z',
-    },
-  ];
+  private readonly tickets: Ticket[] = TICKETS;
+  private nextTicketId = 21;
 
-  findAll() {
-    return this.tickets;
+  findAll(priority?: Ticket['priority'], status?: Ticket['status']) {
+    let tickets = this.tickets;
+
+    if (priority) {
+      tickets = tickets.filter((ticket) => ticket.priority === priority);
+    }
+
+    if (status) {
+      tickets = tickets.filter((ticket) => ticket.status === status);
+    }
+
+    return tickets;
   }
 
   findOne(id: number) {
     const ticket = this.tickets.find((ticket) => ticket.id === id);
 
     if (!ticket) throw new NotFoundException(`Ticket with ID ${id} not found`);
+
+    return ticket;
+  }
+
+  create(createTicketDto: CreateTicketDto) {
+    const ticket: Ticket = {
+      id: this.nextTicketId++,
+      subject: createTicketDto.subject,
+      description: createTicketDto.description,
+      priority: createTicketDto.priority,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+    };
+
+    this.tickets.push(ticket);
 
     return ticket;
   }
