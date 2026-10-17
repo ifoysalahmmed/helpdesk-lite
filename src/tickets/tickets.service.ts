@@ -65,4 +65,16 @@ export class TicketsService {
 
     return ticket;
   }
+
+  closeTicket(id: number) {
+    const ticket = this.findOne(id);
+
+    if (ticket.status === 'closed') {
+      throw new BadRequestException(`Ticket with ID ${id} is already closed`);
+    }
+
+    ticket.status = 'closed';
+
+    return ticket;
+  }
 }
