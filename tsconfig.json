@@ -9,6 +9,12 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    // target ES2022+ turns this on by default, which emits every declared class
+    // field (e.g. DTO props like `subject: string;`) as a real property set to
+    // `undefined`. Keeping it off makes such fields type-only, as decorator-based
+    // libs (NestJS, class-validator, class-transformer) expect, and stops subclass
+    // field declarations from wiping values assigned by a base-class constructor.
+    "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true,
     "target": "ES2023",
     "sourceMap": true,
