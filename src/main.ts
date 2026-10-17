@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { existsSync } from 'node:fs';
 import { AppModule } from './app.module.js';
+import { ResponseInterceptor } from './common/response.interceptor.js';
 
 if (existsSync('.env')) process.loadEnvFile();
 
@@ -16,6 +17,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   await app.listen(process.env.PORT ?? 3000);
 }
